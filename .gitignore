@@ -4,3 +4,7 @@ data/
 __pycache__/
 .idea/
 .DS_Store
+
+target/
+dbt_packages/
+logs/
