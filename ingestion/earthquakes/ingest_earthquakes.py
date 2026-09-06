@@ -126,6 +126,8 @@ all_earthquakes_df = pd.concat(
     ignore_index=True
 )
 
+all_earthquakes_df["_INGESTED_AT"] = pd.Timestamp.now(tz="UTC")
+
 
 print(
     f"Total rows: "

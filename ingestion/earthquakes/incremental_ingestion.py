@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from io import StringIO
 
 import pandas as pd
@@ -91,6 +91,8 @@ earthquakes_df = get_earthquakes(
     updated_after
 )
 
+earthquakes_df["_INGESTED_AT"] = pd.Timestamp.now(tz="UTC")
+
 
 print(
     f"Rows received from USGS: "
@@ -127,7 +129,8 @@ else:
         database="BLUE_DOT_PLOT",
         schema="RAW",
         auto_create_table=False,
-        quote_identifiers=False
+        quote_identifiers=False,
+        use_logical_type=True
     )
 
 
@@ -172,7 +175,8 @@ else:
             target.MAGNST = source.MAGNST,
             target.STATUS = source.STATUS,
             target.LOCATIONSOURCE = source.LOCATIONSOURCE,
-            target.MAGSOURCE = source.MAGSOURCE
+            target.MAGSOURCE = source.MAGSOURCE,
+            target._INGESTED_AT = source._INGESTED_AT
 
         WHEN NOT MATCHED THEN INSERT (
             TIME,
@@ -196,7 +200,8 @@ else:
             MAGNST,
             STATUS,
             LOCATIONSOURCE,
-            MAGSOURCE
+            MAGSOURCE,
+            _INGESTED_AT
         )
 
         VALUES (
@@ -221,7 +226,8 @@ else:
             source.MAGNST,
             source.STATUS,
             source.LOCATIONSOURCE,
-            source.MAGSOURCE
+            source.MAGSOURCE,
+            source._INGESTED_AT
         )
     """)
 

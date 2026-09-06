@@ -1,0 +1,131 @@
+version: 2
+
+sources:
+  - name: usgs
+    database: blue_dot_plot
+    schema: raw
+
+    description: >
+      Raw earthquake data provided by the United States Geological Survey (USGS)
+      Earthquake Catalog.
+
+    tables:
+
+      - name: usgs_earthquakes
+        description: >
+          Raw earthquake event data from the USGS Earthquake Catalog.
+          One row represents one seismic event.
+
+        loaded_at_field: _ingested_at
+
+        freshness:
+          warn_after:
+            count: 1
+            period: day
+          error_after:
+            count: 2
+            period: day
+
+        columns:
+
+          - name: id
+            description: >
+              Unique identifier assigned to the earthquake event by the USGS.
+
+          - name: time
+            description: >
+              Time when the earthquake originated, in UTC.
+
+          - name: updated
+            description: >
+              Time when information about the earthquake event was last updated
+              by the USGS, in UTC.
+
+          - name: latitude
+            description: >
+              Latitude of the earthquake epicenter in decimal degrees.
+
+          - name: longitude
+            description: >
+              Longitude of the earthquake epicenter in decimal degrees.
+
+          - name: depth
+            description: >
+              Depth of the earthquake hypocenter below the Earth's surface,
+              measured in kilometers.
+
+          - name: mag
+            description: >
+              Magnitude of the earthquake. Magnitude is a logarithmic,
+              dimensionless measure of earthquake size.
+
+          - name: magtype
+            description: >
+              Method or algorithm used to calculate the preferred earthquake
+              magnitude.
+
+          - name: nst
+            description: >
+              Number of seismic stations used to determine the earthquake
+              location.
+
+          - name: gap
+            description: >
+              Largest azimuthal gap between stations used to determine the
+              earthquake location, measured in degrees.
+
+          - name: dmin
+            description: >
+              Horizontal distance from the earthquake epicenter to the nearest
+              station, expressed in degrees.
+
+          - name: rms
+            description: >
+              Root-mean-square travel-time residual, measured in seconds.
+
+          - name: net
+            description: >
+              Identifier of the preferred data contributor network.
+
+          - name: place
+            description: >
+              Textual description of the geographic region near the earthquake
+              event.
+
+          - name: type
+            description: >
+              Type of seismic event, such as earthquake or explosion.
+
+          - name: horizontalerror
+            description: >
+              Estimated horizontal location uncertainty, measured in kilometers.
+
+          - name: deptherror
+            description: >
+              Estimated uncertainty in the earthquake depth, measured in kilometers.
+
+          - name: magerror
+            description: >
+              Estimated standard error of the reported magnitude.
+
+          - name: magnst
+            description: >
+              Number of stations used to calculate the earthquake magnitude.
+
+          - name: status
+            description: >
+              Status of the earthquake event, indicating whether the event
+              solution is automatic or reviewed.
+
+          - name: locationsource
+            description: >
+              Network that originally authored the earthquake location.
+
+          - name: magsource
+            description: >
+              Network that originally authored the earthquake magnitude.
+
+          - name: _ingested_at
+            description: >
+              Timestamp in UTC indicating when the earthquake record was loaded
+              into the Blue Dot Plot raw layer.

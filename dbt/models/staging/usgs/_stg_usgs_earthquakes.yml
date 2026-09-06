@@ -1,0 +1,126 @@
+version: 2
+
+models:
+
+  - name: stg_usgs_earthquakes
+    description: >
+      Staging model containing normalized earthquake event data from the USGS
+      Earthquake Catalog. One row represents one seismic event.
+
+    columns:
+
+      - name: event_id
+        description: >
+          Unique identifier assigned to the earthquake event by the USGS.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: event_time_utc
+        description: >
+          Time when the earthquake originated, in UTC.
+        data_tests:
+          - not_null
+
+      - name: updated_at_utc
+        description: >
+          Time when information about the earthquake event was last updated
+          by the USGS, in UTC.
+        data_tests:
+          - not_null
+
+      - name: latitude
+        description: >
+          Latitude of the earthquake epicenter in decimal degrees.
+        data_tests:
+          - not_null
+
+      - name: longitude
+        description: >
+          Longitude of the earthquake epicenter in decimal degrees.
+        data_tests:
+          - not_null
+
+      - name: depth_km
+        description: >
+          Depth of the earthquake hypocenter below the Earth's surface,
+          measured in kilometers.
+        data_tests:
+          - not_null
+
+      - name: magnitude
+        description: >
+          Magnitude of the earthquake. Magnitude is a logarithmic,
+          dimensionless measure of earthquake size.
+        data_tests:
+          - not_null
+
+      - name: magnitude_type
+        description: >
+          Method or algorithm used to calculate the preferred earthquake
+          magnitude.
+
+      - name: location_station_count
+        description: >
+          Number of seismic stations used to determine the earthquake
+          location.
+
+      - name: azimuthal_gap_deg
+        description: >
+          Largest azimuthal gap between stations used to determine the
+          earthquake location, measured in degrees.
+
+      - name: nearest_station_distance_deg
+        description: >
+          Horizontal distance from the earthquake epicenter to the nearest
+          station, expressed in degrees.
+
+      - name: rms_residual_sec
+        description: >
+          Root-mean-square travel-time residual, measured in seconds.
+
+      - name: preferred_network
+        description: >
+          Identifier of the preferred data contributor network.
+
+      - name: place
+        description: >
+          Textual description of the geographic region near the earthquake
+          event.
+
+      - name: event_type
+        description: >
+          Type of seismic event, such as earthquake or explosion.
+        data_tests:
+          - not_null
+
+      - name: horizontal_location_error_km
+        description: >
+          Estimated horizontal location uncertainty, measured in kilometers.
+
+      - name: depth_error_km
+        description: >
+          Estimated uncertainty in the earthquake depth, measured in kilometers.
+
+      - name: magnitude_error
+        description: >
+          Estimated standard error of the reported magnitude.
+
+      - name: magnitude_station_count
+        description: >
+          Number of stations used to calculate the earthquake magnitude.
+
+      - name: event_status
+        description: >
+          Status of the earthquake event, indicating whether the event
+          solution is automatic or reviewed.
+        data_tests:
+          - not_null
+
+      - name: location_source_network
+        description: >
+          Network that originally authored the earthquake location.
+
+      - name: magnitude_source_network
+        description: >
+          Network that originally authored the earthquake magnitude.
