@@ -117,10 +117,53 @@ models:
         data_tests:
           - not_null
 
-      - name: location_source_network
+      - name: mmi
         description: >
-          Network that originally authored the earthquake location.
+          Maximum estimated instrumental Modified Mercalli Intensity
+          associated with the earthquake event.
 
-      - name: magnitude_source_network
+      - name: cdi
         description: >
-          Network that originally authored the earthquake magnitude.
+          Maximum Community Decimal Intensity reported through the USGS
+          Did You Feel It? system.
+
+      - name: felt_count
+        description: >
+          Number of felt reports submitted through the USGS
+          Did You Feel It? system.
+
+      - name: tsunami_flag
+        description: >
+          USGS tsunami flag. A value of 1 indicates that the event met
+          USGS criteria for the tsunami flag; it does not mean that a
+          tsunami actually occurred.
+
+      - name: alert
+        description: >
+          USGS PAGER alert level associated with the earthquake event.
+
+      - name: significance_score
+        description: >
+          USGS significance score assigned to the earthquake event.
+
+      - name: url
+        description: >
+          URL of the USGS earthquake event page.
+
+      - name: detail
+        description: >
+          URL of the detailed USGS event GeoJSON endpoint.
+
+      - name: ids
+        description: >
+          Comma-separated identifiers associated with the event across
+          contributing seismic networks and sources.
+
+      - name: types
+        description: >
+          Comma-separated list of USGS product types associated with
+          the event.
+
+      - name: code
+        description: >
+          USGS event code identifying the event within its network.
