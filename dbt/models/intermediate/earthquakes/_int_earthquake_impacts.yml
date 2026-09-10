@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: int_earthquake_impacts
+    description: >
+      Intermediate event-level model containing earthquake impact and
+      significance attributes reported by the USGS earthquake catalog.
+      Grain: one row per seismic event.
+
+    columns:
+      - name: event_id
+        description: >
+          Unique identifier of the seismic event from the USGS earthquake catalog.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: mmi
+        description: >
+          Maximum estimated instrumental Modified Mercalli Intensity
+          associated with the event.
+
+      - name: cdi
+        description: >
+          Maximum Community Decimal Intensity reported through the USGS
+          Did You Feel It? system.
+
+      - name: felt_count
+        description: >
+          Number of responses or felt reports associated with the event
+          in the USGS Did You Feel It? system.
+
+      - name: tsunami_flag
+        description: >
+          USGS tsunami flag indicating whether the event meets criteria
+          associated with a potential tsunami evaluation. A value of 1
+          does not mean that a tsunami occurred.
+
+      - name: alert
+        description: >
+          USGS PAGER alert level associated with the event, when available.
+
+      - name: significance_score
+        description: >
+          USGS significance score representing the relative importance
+          of the event within the USGS earthquake catalog.
