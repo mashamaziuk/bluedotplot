@@ -1,0 +1,187 @@
+version: 2
+
+models:
+  - name: int_earthquakes_base
+    description: >
+      Intermediate event-level base model for earthquake analytics.
+      Grain: one row per seismic event. The model converts event timestamps
+      from Unix milliseconds to UTC timestamps, adds basic unit conversions,
+      and enriches USGS magnitude types with human-readable reference
+      information.
+
+    columns:
+      - name: event_id
+        description: >
+          Unique identifier of the seismic event from the USGS earthquake catalog.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: event_time_utc
+        description: >
+          Date and time when the seismic event occurred, represented as a UTC timestamp.
+        data_tests:
+          - not_null
+
+      - name: updated_at_utc
+        description: >
+          Date and time when the USGS event record was last updated, represented as a UTC timestamp.
+        data_tests:
+          - not_null
+
+      - name: latitude
+        description: >
+          Latitude of the event epicenter in decimal degrees.
+        data_tests:
+          - not_null
+
+      - name: longitude
+        description: >
+          Longitude of the event epicenter in decimal degrees.
+        data_tests:
+          - not_null
+
+      - name: depth_km
+        description: >
+          Depth of the event hypocenter below the Earth's surface, in kilometers.
+        data_tests:
+          - not_null
+
+      - name: depth_miles
+        description: >
+          Depth of the event hypocenter below the Earth's surface, converted to miles.
+
+      - name: magnitude
+        description: >
+          Preferred earthquake magnitude reported by the USGS.
+        data_tests:
+          - not_null
+
+      - name: magnitude_type
+        description: >
+          Original USGS magnitude type code used to calculate the preferred magnitude.
+
+      - name: magnitude_family
+        description: >
+          Higher-level magnitude family used to group related magnitude types,
+          such as Mw, ML, mb, and Ms.
+
+      - name: magnitude_name
+        description: >
+          Human-readable name of the magnitude type.
+
+      - name: magnitude_description
+        description: >
+          Short human-readable explanation of how the magnitude type is determined.
+
+      - name: magnitude_measurement_basis
+        description: >
+          Main seismic measurement or signal characteristic used to determine
+          the magnitude.
+
+      - name: event_type
+        description: >
+          USGS classification of the event, such as earthquake or other seismic event.
+        data_tests:
+          - not_null
+
+      - name: event_status
+        description: >
+          Status of the USGS event solution, such as automatic or reviewed.
+        data_tests:
+          - not_null
+
+      - name: place
+        description: >
+          USGS human-readable description of the event location.
+
+      - name: preferred_network
+        description: >
+          Network that provided the preferred event solution.
+
+      - name: location_station_count
+        description: >
+          Number of seismic stations used in the event location solution.
+
+      - name: azimuthal_gap_deg
+        description: >
+          Largest azimuthal gap between seismic stations used to locate the event,
+          measured in degrees.
+
+      - name: nearest_station_distance_deg
+        description: >
+          Distance in degrees from the event to the nearest seismic station.
+
+      - name: rms_residual_sec
+        description: >
+          Root-mean-square residual of the event location solution, in seconds.
+
+      - name: horizontal_location_error_km
+        description: >
+          Estimated horizontal location uncertainty, in kilometers.
+
+      - name: depth_error_km
+        description: >
+          Estimated uncertainty of the event depth, in kilometers.
+
+      - name: depth_error_miles
+        description: >
+          Estimated uncertainty of the event depth, converted to miles.
+
+      - name: magnitude_error
+        description: >
+          Estimated uncertainty of the reported earthquake magnitude.
+
+      - name: magnitude_station_count
+        description: >
+          Number of seismic stations used to calculate the preferred magnitude.
+
+      - name: mmi
+        description: >
+          Maximum estimated instrumental Modified Mercalli Intensity associated
+          with the event.
+
+      - name: cdi
+        description: >
+          Maximum Community Decimal Intensity reported through the USGS
+          Did You Feel It? system.
+
+      - name: felt_count
+        description: >
+          Number of responses or felt reports associated with the event in the
+          USGS Did You Feel It? system.
+
+      - name: tsunami_flag
+        description: >
+          USGS tsunami flag indicating whether the event meets the criteria
+          associated with a potential tsunami evaluation. A value of 1 does not
+          mean that a tsunami occurred.
+
+      - name: alert
+        description: >
+          USGS PAGER alert level associated with the event, when available.
+
+      - name: significance_score
+        description: >
+          USGS significance score representing the relative importance of the
+          event within the USGS earthquake catalog.
+
+      - name: url
+        description: >
+          URL of the USGS event page.
+
+      - name: detail
+        description: >
+          URL of the detailed USGS event GeoJSON endpoint.
+
+      - name: ids
+        description: >
+          Comma-delimited list of related event identifiers associated with the event.
+
+      - name: types
+        description: >
+          Comma-delimited list of product types available for the event.
+
+      - name: code
+        description: >
+          Event code assigned by the reporting seismic network.

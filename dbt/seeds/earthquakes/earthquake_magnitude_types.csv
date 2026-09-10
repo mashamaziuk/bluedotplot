@@ -5,7 +5,7 @@ mblg,mb_Lg,Lg-wave magnitude,Regional magnitude based on the amplitude of Lg sur
 md,Md,Duration magnitude,Magnitude based on the duration of seismic shaking,duration of the seismic signal,USGS
 Md,Md,Duration magnitude,Magnitude based on the duration of seismic shaking,duration of the seismic signal,USGS
 ml,ML,Local magnitude,Local magnitude based on the maximum amplitude of a seismic wave,maximum wave amplitude,USGS
-ML,ML,Local magnitude,Local magnitude based on the maximum amplitude of a seismic wave,maximum wave amplitude,USGS
+Ml,ML,Local magnitude,Local magnitude based on the maximum amplitude of a seismic wave,maximum wave amplitude,USGS
 m,Unspecified,Unspecified magnitude,Magnitude reported without a more specific magnitude type,Not specified,USGS
 Mb,mb,Body-wave magnitude,Magnitude based on short-period body waves,body-wave amplitude,USGS
 mww,Mw,Moment magnitude — W-phase,Moment magnitude derived from a W-phase inversion,seismic moment,USGS
@@ -21,4 +21,5 @@ mlv,ML,Local magnitude variant,Network-specific variant of local magnitude,maxim
 mc,Mc,Coda magnitude,Magnitude based on seismic coda measurements,coda-wave signal,USGS
 mh,Mh,Non-standard magnitude,Non-standard magnitude method used when standard methods are not applicable,Network-specific,USGS
 ms_vx,Ms_vx,Surface-wave magnitude — network-specific,Network-specific surface-wave magnitude type,Network-specific,USGS
-ml(textent),ML,textent local magnitude,Network-specific local magnitude variant,Network-specific,USGS
+ml(texnet),ML,TexNet local magnitude,Network-specific local magnitude variant,Network-specific,USGS
+ms_20,Ms,Surface-wave magnitude — 20-second period,Surface-wave magnitude determined using waves with an approximately 20-second period,surface-wave amplitude,USGS
