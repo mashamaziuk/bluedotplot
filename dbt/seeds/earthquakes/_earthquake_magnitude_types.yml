@@ -1,0 +1,37 @@
+version: 2
+
+seeds:
+  - name: earthquake_magnitude_types
+    description: >
+      Reference mapping for USGS earthquake magnitude types.
+      Provides human-readable names, magnitude families, descriptions,
+      and measurement basis for magnitude types observed in the USGS
+      earthquake catalog.
+
+    columns:
+      - name: magnitude_type
+        description: >
+          Original USGS magnitude type code as reported in the earthquake catalog.
+          Values are preserved as provided by USGS.
+
+      - name: magnitude_family
+        description: >
+          Higher-level magnitude family used to group related magnitude types,
+          such as Mw, ML, mb, and Ms.
+
+      - name: magnitude_name
+        description: >
+          Human-readable name of the magnitude type.
+
+      - name: magnitude_description
+        description: >
+          Short human-readable explanation of how the magnitude type is determined.
+
+      - name: magnitude_measurement_basis
+        description: >
+          Main seismic measurement or signal characteristic used to determine
+          the magnitude.
+
+      - name: source
+        description: >
+          Source of the magnitude type definition and reference information.

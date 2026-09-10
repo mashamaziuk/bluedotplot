@@ -1,0 +1,24 @@
+magnitude_type,magnitude_family,magnitude_name,magnitude_description,magnitude_measurement_basis,source
+mb,mb,Body-wave magnitude,Magnitude based on the amplitude of the first arriving P-waves,body-wave amplitude,USGS
+mb_lg,mb_Lg,Lg-wave magnitude,Regional magnitude based on the amplitude of Lg surface waves,Lg-wave amplitude,USGS
+mblg,mb_Lg,Lg-wave magnitude,Regional magnitude based on the amplitude of Lg surface waves,Lg-wave amplitude,USGS
+md,Md,Duration magnitude,Magnitude based on the duration of seismic shaking,duration of the seismic signal,USGS
+Md,Md,Duration magnitude,Magnitude based on the duration of seismic shaking,duration of the seismic signal,USGS
+ml,ML,Local magnitude,Local magnitude based on the maximum amplitude of a seismic wave,maximum wave amplitude,USGS
+ML,ML,Local magnitude,Local magnitude based on the maximum amplitude of a seismic wave,maximum wave amplitude,USGS
+m,Unspecified,Unspecified magnitude,Magnitude reported without a more specific magnitude type,Not specified,USGS
+Mb,mb,Body-wave magnitude,Magnitude based on short-period body waves,body-wave amplitude,USGS
+mww,Mw,Moment magnitude — W-phase,Moment magnitude derived from a W-phase inversion,seismic moment,USGS
+mwc,Mw,Moment magnitude — centroid,Moment magnitude derived from a centroid moment tensor inversion using long-period surface waves,seismic moment,USGS
+mwb,Mw,Moment magnitude — body-wave,Moment magnitude derived from a moment tensor inversion of long-period body waves,seismic moment,USGS
+mwr,Mw,Moment magnitude — regional,Regional moment magnitude derived from moment tensor inversion of regional seismic waveforms,seismic moment,USGS
+mwp,Mw,Moment magnitude — P-wave,Moment magnitude estimated from the integrated P-wave signal,seismic moment,USGS
+mw,Mw,Moment magnitude,Generic moment magnitude based on seismic moment,seismic moment,USGS
+ms,Ms,Surface-wave magnitude,Magnitude based on the amplitude of Rayleigh surface waves at approximately 20 seconds period,surface-wave amplitude,USGS
+mlr,ML,Regional local magnitude,Regional variant of local magnitude,maximum wave amplitude,USGS
+mlg,MLg,Lg-wave local magnitude,Regional magnitude based on Lg surface waves,Lg-wave amplitude,USGS
+mlv,ML,Local magnitude variant,Network-specific variant of local magnitude,maximum wave amplitude,USGS
+mc,Mc,Coda magnitude,Magnitude based on seismic coda measurements,coda-wave signal,USGS
+mh,Mh,Non-standard magnitude,Non-standard magnitude method used when standard methods are not applicable,Network-specific,USGS
+ms_vx,Ms_vx,Surface-wave magnitude — network-specific,Network-specific surface-wave magnitude type,Network-specific,USGS
+ml(textent),ML,textent local magnitude,Network-specific local magnitude variant,Network-specific,USGS
