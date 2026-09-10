@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: int_earthquake_place_candidates
+    description: >
+      Intermediate spatial enrichment model linking seismic events from the
+      last 14 days to populated places within a magnitude-dependent analytical
+      search radius.
+      Grain: one row per earthquake × populated place relationship.
+      The search radius is an analytical candidate window and does not
+      represent the area where an earthquake was felt.
+
+    columns:
+      - name: event_id
+        description: >
+          Unique identifier of the seismic event from the USGS earthquake catalog.
+        data_tests:
+          - not_null
+
+      - name: magnitude
+        description: >
+          Magnitude of the seismic event from the USGS earthquake catalog.
+
+      - name: candidate_search_radius_km
+        description: >
+          Magnitude-dependent analytical search radius used to identify
+          populated places near the earthquake. This is a candidate search
+          window and is not a measure of the earthquake's felt or damaged area.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [50, 100, 200, 300, 400, 750]
+
+      - name: geoname_id
+        description: >
+          Unique GeoNames identifier of the populated place.
+        data_tests:
+          - not_null
+
+      - name: place_name
+        description: >
+          Name of the populated place from the GeoNames cities1000 dataset.
+
+      - name: feature_code
+        description: >
+          GeoNames feature code describing the type of populated place.
+
+      - name: country_code
+        description: >
+          ISO-style country code associated with the populated place
+          in the GeoNames dataset.
+
+      - name: population
+        description: >
+          Population associated with the populated place in the GeoNames dataset.
+
+      - name: distance_km
+        description: >
+          Great-circle distance in kilometers between the earthquake
+          location and the populated place.
+
+      - name: distance_miles
+        description: >
+          Great-circle distance in miles between the earthquake location
+          and the populated place.
