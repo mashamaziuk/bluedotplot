@@ -3,16 +3,15 @@ with earthquakes as (
     select
         event_id,
         magnitude,
-        latitude,
-        longitude,
+        st_makepoint(longitude, latitude) as earthquake_point,
 
         case
-            when magnitude < 4 then 50
-            when magnitude < 5 then 100
-            when magnitude < 6 then 200
-            when magnitude < 7 then 300
-            when magnitude < 8 then 400
-            else 750
+            when magnitude < 4 then 100
+            when magnitude < 5 then 200
+            when magnitude < 6 then 400
+            when magnitude < 7 then 700
+            when magnitude < 8 then 1000
+            else 1500
         end as candidate_search_radius_km
 
     from {{ ref('int_earthquakes_base') }}
@@ -30,86 +29,206 @@ populated_places as (
         longitude,
         feature_code,
         country_code,
-        nullif(population, 0) as population
+        nullif(population, 0) as population,
+        st_makepoint(longitude, latitude) as place_point
 
     from {{ ref('geonames_cities1000') }}
 
+    where population >= 1000
+
 ),
 
-earthquake_points as (
+nearest_populated_place as (
 
     select
-        event_id,
-        magnitude,
-        candidate_search_radius_km,
-        st_makepoint(longitude, latitude) as earthquake_point
+        earthquakes.event_id,
+        earthquakes.magnitude,
+        earthquakes.candidate_search_radius_km,
+
+        populated_places.geoname_id,
+        populated_places.place_name,
+        populated_places.feature_code,
+        populated_places.country_code,
+        populated_places.population,
+
+        st_distance(
+            earthquakes.earthquake_point,
+            populated_places.place_point
+        ) as distance_meters,
+
+        'nearest_populated_place' as candidate_type
 
     from earthquakes
 
-),
-
-place_points as (
-
-    select
-        geoname_id,
-        place_name,
-        feature_code,
-        country_code,
-        population,
-        st_makepoint(longitude, latitude) as place_point
-
-    from populated_places
-
-),
-
-candidate_places as (
-
-    select
-        earthquake_points.event_id,
-        earthquake_points.magnitude,
-        earthquake_points.candidate_search_radius_km,
-
-        place_points.geoname_id,
-        place_points.place_name,
-        place_points.feature_code,
-        place_points.country_code,
-        place_points.population,
-
-        st_distance(
-            earthquake_points.earthquake_point,
-            place_points.place_point
-        ) as distance_meters
-
-    from earthquake_points
-
-    inner join place_points
+    inner join populated_places
         on st_dwithin(
-            earthquake_points.earthquake_point,
-            place_points.place_point,
-            earthquake_points.candidate_search_radius_km * 1000
+            earthquakes.earthquake_point,
+            populated_places.place_point,
+            earthquakes.candidate_search_radius_km * 1000
         )
 
+    qualify row_number() over (
+        partition by earthquakes.event_id
+        order by distance_meters
+    ) = 1
+
 ),
 
-final as (
+nearest_large_places as (
 
     select
-        event_id,
-        magnitude,
-        candidate_search_radius_km,
+        earthquakes.event_id,
+        earthquakes.magnitude,
+        earthquakes.candidate_search_radius_km,
 
+        populated_places.geoname_id,
+        populated_places.place_name,
+        populated_places.feature_code,
+        populated_places.country_code,
+        populated_places.population,
+
+        st_distance(
+            earthquakes.earthquake_point,
+            populated_places.place_point
+        ) as distance_meters,
+
+        'large_populated_place' as candidate_type
+
+    from earthquakes
+
+    inner join populated_places
+        on populated_places.population >= 10000
+        and st_dwithin(
+            earthquakes.earthquake_point,
+            populated_places.place_point,
+            earthquakes.candidate_search_radius_km * 1000
+        )
+
+    where not exists (
+
+        select 1
+
+        from nearest_populated_place
+
+        where nearest_populated_place.event_id = earthquakes.event_id
+          and nearest_populated_place.geoname_id = populated_places.geoname_id
+
+    )
+
+    qualify row_number() over (
+        partition by earthquakes.event_id
+        order by distance_meters
+    ) <= 3
+
+),
+
+capital_places as (
+
+    select
         geoname_id,
         place_name,
+        latitude,
+        longitude,
         feature_code,
         country_code,
-        population,
+        nullif(population, 0) as population,
+        st_makepoint(longitude, latitude) as place_point
 
-        distance_meters / 1000 as distance_km,
-        distance_meters / 1609.344 as distance_miles
+    from {{ ref('geonames_cities1000') }}
 
-    from candidate_places
+    where feature_code in ('PPLC', 'PPLA')
+
+),
+
+nearest_capital as (
+
+    select
+        earthquakes.event_id,
+        earthquakes.magnitude,
+        earthquakes.candidate_search_radius_km,
+
+        capital_places.geoname_id,
+        capital_places.place_name,
+        capital_places.feature_code,
+        capital_places.country_code,
+        capital_places.population,
+
+        st_distance(
+            earthquakes.earthquake_point,
+            capital_places.place_point
+        ) as distance_meters,
+
+        'capital_city' as candidate_type
+
+    from earthquakes
+
+    inner join capital_places
+        on st_dwithin(
+            earthquakes.earthquake_point,
+            capital_places.place_point,
+            earthquakes.candidate_search_radius_km * 1000
+        )
+
+    where not exists (
+
+        select 1
+
+        from nearest_populated_place
+
+        where nearest_populated_place.event_id = earthquakes.event_id
+          and nearest_populated_place.geoname_id = capital_places.geoname_id
+
+    )
+
+      and not exists (
+
+        select 1
+
+        from nearest_large_places
+
+        where nearest_large_places.event_id = earthquakes.event_id
+          and nearest_large_places.geoname_id = capital_places.geoname_id
+
+    )
+
+    qualify row_number() over (
+        partition by earthquakes.event_id
+        order by distance_meters
+    ) = 1
+
+),
+
+candidates as (
+
+    select *
+    from nearest_populated_place
+
+    union all
+
+    select *
+    from nearest_large_places
+
+    union all
+
+    select *
+    from nearest_capital
 
 )
 
-select *
-from final
+select
+    event_id,
+    magnitude,
+    candidate_search_radius_km,
+
+    geoname_id,
+    place_name,
+    feature_code,
+    country_code,
+    population,
+
+    distance_meters / 1000 as distance_km,
+    distance_meters / 1609.344 as distance_miles,
+
+    candidate_type
+
+from candidates
