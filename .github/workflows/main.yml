@@ -1,4 +1,4 @@
-name: Hourly earthquake ingestion
+name: Hourly earthquake pipeline
 
 on:
   schedule:
@@ -20,7 +20,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests pandas python-dotenv snowflake-connector-python pyarrow
+          pip install \
+            requests \
+            pandas \
+            python-dotenv \
+            snowflake-connector-python \
+            pyarrow \
+            dbt-core==1.11.6 \
+            dbt-snowflake==1.11.6
 
       - name: Run incremental ingestion
         env:
@@ -31,3 +38,35 @@ jobs:
           SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: python ingestion/earthquakes/incremental_ingestion.py
+
+      - name: Create dbt profile
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+        run: |
+          mkdir -p ~/.dbt
+
+          cat > ~/.dbt/profiles.yml <<EOF
+          bluedotplot:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: ${SNOWFLAKE_ACCOUNT}
+                user: ${SNOWFLAKE_USER}
+                password: ${SNOWFLAKE_PASSWORD}
+                role: ACCOUNTADMIN
+                warehouse: ${SNOWFLAKE_WAREHOUSE}
+                database: ${SNOWFLAKE_DATABASE}
+                schema: DBT
+                threads: 1
+          EOF
+
+      - name: Run dbt earthquake models
+        run: |
+          dbt build \
+            --project-dir dbt \
+            --select int_earthquake_place_candidates earthquake_places
