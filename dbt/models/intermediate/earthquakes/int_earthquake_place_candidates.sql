@@ -8,6 +8,7 @@ with earthquakes as (
 
     select
         event_id,
+        event_time_utc,
         updated_at_utc,
         magnitude,
         st_makepoint(longitude, latitude) as earthquake_point,
@@ -61,6 +62,7 @@ nearest_populated_place as (
 
     select
         earthquakes.event_id,
+        earthquakes.event_time_utc,
         earthquakes.updated_at_utc,
         earthquakes.magnitude,
         earthquakes.candidate_search_radius_km,
@@ -98,6 +100,7 @@ nearest_large_places as (
 
     select
         earthquakes.event_id,
+        earthquakes.event_time_utc,
         earthquakes.updated_at_utc,
         earthquakes.magnitude,
         earthquakes.candidate_search_radius_km,
@@ -161,6 +164,7 @@ nearest_capital as (
 
     select
         earthquakes.event_id,
+        earthquakes.event_time_utc,
         earthquakes.updated_at_utc,
         earthquakes.magnitude,
         earthquakes.candidate_search_radius_km,
@@ -226,6 +230,7 @@ candidates as (
 
 select
     event_id,
+    event_time_utc,
     updated_at_utc,
     magnitude,
     candidate_search_radius_km,

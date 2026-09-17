@@ -28,6 +28,14 @@ models:
         data_tests:
           - not_null
 
+      - name: event_time_utc
+        description: >
+          Timestamp when the earthquake occurred, in UTC.
+          Used to apply the rolling retention window for candidate
+          populated-place relationships.
+        data_tests:
+          - not_null
+
       - name: updated_at_utc
         description: >
           Timestamp when the earthquake record was last updated in the
