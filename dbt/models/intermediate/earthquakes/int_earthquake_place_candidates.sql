@@ -1,7 +1,14 @@
+{{ config(
+    materialized='incremental',
+    incremental_strategy='delete+insert',
+    unique_key='event_id'
+) }}
+
 with earthquakes as (
 
     select
         event_id,
+        updated_at_utc,
         magnitude,
         st_makepoint(longitude, latitude) as earthquake_point,
 
@@ -16,7 +23,19 @@ with earthquakes as (
 
     from {{ ref('int_earthquakes_base') }}
 
-    where event_time_utc >= dateadd(day, -14, current_timestamp())
+    where event_time_utc >= dateadd(day, -30, current_timestamp())
+
+    {% if is_incremental() %}
+
+        and updated_at_utc >= (
+            select coalesce(
+                dateadd(hour, -1, max(updated_at_utc)),
+                '1900-01-01'::timestamp_ntz
+            )
+            from {{ this }}
+        )
+
+    {% endif %}
 
 ),
 
@@ -42,6 +61,7 @@ nearest_populated_place as (
 
     select
         earthquakes.event_id,
+        earthquakes.updated_at_utc,
         earthquakes.magnitude,
         earthquakes.candidate_search_radius_km,
 
@@ -78,6 +98,7 @@ nearest_large_places as (
 
     select
         earthquakes.event_id,
+        earthquakes.updated_at_utc,
         earthquakes.magnitude,
         earthquakes.candidate_search_radius_km,
 
@@ -105,14 +126,10 @@ nearest_large_places as (
         )
 
     where not exists (
-
         select 1
-
         from nearest_populated_place
-
         where nearest_populated_place.event_id = earthquakes.event_id
           and nearest_populated_place.geoname_id = populated_places.geoname_id
-
     )
 
     qualify row_number() over (
@@ -144,6 +161,7 @@ nearest_capital as (
 
     select
         earthquakes.event_id,
+        earthquakes.updated_at_utc,
         earthquakes.magnitude,
         earthquakes.candidate_search_radius_km,
 
@@ -170,25 +188,16 @@ nearest_capital as (
         )
 
     where not exists (
-
         select 1
-
         from nearest_populated_place
-
         where nearest_populated_place.event_id = earthquakes.event_id
           and nearest_populated_place.geoname_id = capital_places.geoname_id
-
     )
-
       and not exists (
-
         select 1
-
         from nearest_large_places
-
         where nearest_large_places.event_id = earthquakes.event_id
           and nearest_large_places.geoname_id = capital_places.geoname_id
-
     )
 
     qualify row_number() over (
@@ -217,6 +226,7 @@ candidates as (
 
 select
     event_id,
+    updated_at_utc,
     magnitude,
     candidate_search_radius_km,
 

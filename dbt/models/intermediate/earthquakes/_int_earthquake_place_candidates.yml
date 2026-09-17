@@ -3,37 +3,22 @@ version: 2
 models:
   - name: int_earthquake_place_candidates
     description: >
-      Intermediate spatial candidate model identifying populated places
-      that may provide meaningful geographic context for recent earthquakes.
+      Intermediate model identifying populated places that provide
+      geographic context for recent earthquake events.
 
-      Grain: one row per earthquake-place candidate relationship.
+      Grain: one row per earthquake-place relationship.
 
-      Candidate places are searched within a magnitude-dependent geographic
-      search radius. The search radius increases with earthquake magnitude
-      to provide a broader candidate pool for larger events.
+      Candidate places are selected using a magnitude-dependent search
+      radius and GeoNames populated-place data. The model identifies
+      the nearest populated place, up to three additional large populated
+      places, and a nearby capital city when applicable.
 
-      The search radius is a Blue Dot Plot heuristic and is not intended
-      to represent a seismic hazard zone, felt-shaking boundary, or area
-      of safety. Actual earthquake intensity varies with distance, depth,
-      rupture characteristics, local geology, and other factors.
+      The candidate search radius is a Blue Dot Plot heuristic and is
+      not intended to represent a seismic hazard zone, felt-shaking
+      boundary, or area of safety.
 
-      Candidate selection is inspired by the documented USGS approach to
-      nearby populated places, which uses GeoNames data and distinguishes
-      the closest populated place, additional larger populated places,
-      and capital cities. Blue Dot Plot does not attempt to reproduce the
-      undocumented internal USGS GeoServe event-selection algorithm.
-
-      Candidate search radius:
-        - magnitude < 4.0: 100 km
-        - magnitude 4.0-4.9: 200 km
-        - magnitude 5.0-5.9: 400 km
-        - magnitude 6.0-6.9: 700 km
-        - magnitude 7.0-7.9: 1,000 km
-        - magnitude >= 8.0: 1,500 km
-
-      The model does not require a fixed number of candidates. If fewer
-      meaningful populated places are available within the search radius,
-      fewer candidates are returned.
+      The model contains candidate relationships for earthquakes from
+      the most recent 14 days.
 
     columns:
 
@@ -43,15 +28,25 @@ models:
         data_tests:
           - not_null
 
+      - name: updated_at_utc
+        description: >
+          Timestamp when the earthquake record was last updated in the
+          USGS earthquake catalog. Used to identify new or updated events
+          during incremental processing.
+        data_tests:
+          - not_null
+
       - name: magnitude
         description: >
-          Earthquake magnitude reported by the USGS earthquake catalog.
+          Earthquake magnitude reported by the USGS catalog.
 
       - name: candidate_search_radius_km
         description: >
           Magnitude-dependent geographic search radius used to identify
-          candidate populated places. This is a Blue Dot Plot heuristic,
-          not a seismic hazard or felt-intensity boundary.
+          candidate populated places. This is a Blue Dot Plot heuristic
+          for defining the geographic search window and is not intended
+          to represent a seismic hazard zone, felt-shaking boundary,
+          or area of safety.
 
       - name: geoname_id
         description: >
@@ -61,7 +56,7 @@ models:
 
       - name: place_name
         description: >
-          Name of the candidate populated place from the GeoNames reference dataset.
+          Name of the candidate populated place.
 
       - name: feature_code
         description: >
@@ -69,24 +64,24 @@ models:
 
       - name: country_code
         description: >
-          ISO country code associated with the candidate populated place.
+          Country code associated with the populated place.
 
       - name: population
         description: >
-          Population associated with the candidate populated place in the
-          GeoNames reference dataset.
+          Population associated with the populated place in the GeoNames
+          reference dataset.
 
       - name: distance_km
         description: >
-          Great-circle distance between the earthquake epicenter and the
-          candidate populated place, in kilometers.
+          Distance between the earthquake epicenter and the populated place,
+          in kilometers.
 
       - name: distance_miles
         description: >
-          Great-circle distance between the earthquake epicenter and the
-          candidate populated place, in miles.
+          Distance between the earthquake epicenter and the populated place,
+          in miles.
 
       - name: candidate_type
         description: >
-          Reason the place was selected as a candidate:
+          Category under which the place was selected:
           nearest_populated_place, large_populated_place, or capital_city.

@@ -1,0 +1,79 @@
+version: 2
+
+models:
+  - name: earthquake_places
+    description: >
+      Mart model providing populated places associated with earthquakes
+      for use in downstream analysis and visualization.
+
+      Grain: one row per earthquake-place relationship.
+
+      Places are inherited from the earthquake place candidate model.
+      Each earthquake may have zero, one, or multiple associated places.
+      Places are ranked by distance from the earthquake epicenter.
+
+      The model is designed to provide a frontend-friendly relational
+      structure rather than pivoting places into separate columns.
+      This allows the number of places associated with an earthquake
+      to vary naturally.
+
+    columns:
+
+      - name: event_id
+        description: >
+          Unique identifier of the seismic event from the USGS earthquake catalog.
+        data_tests:
+          - not_null
+
+      - name: geoname_id
+        description: >
+          Unique GeoNames identifier of the associated populated place.
+        data_tests:
+          - not_null
+
+      - name: place_name
+        description: >
+          Name of the populated place associated with the earthquake.
+
+      - name: feature_code
+        description: >
+          GeoNames feature code describing the type of populated place.
+
+      - name: country_code
+        description: >
+          Country code associated with the populated place.
+
+      - name: population
+        description: >
+          Population associated with the populated place in the GeoNames
+          reference dataset.
+
+      - name: place_latitude
+        description: >
+          Latitude of the populated place.
+
+      - name: place_longitude
+        description: >
+          Longitude of the populated place.
+
+      - name: distance_km
+        description: >
+          Distance between the earthquake epicenter and the populated place,
+          in kilometers.
+
+      - name: distance_miles
+        description: >
+          Distance between the earthquake epicenter and the populated place,
+          in miles.
+
+      - name: candidate_type
+        description: >
+          Category under which the place was selected:
+          nearest_populated_place, large_populated_place, or capital_city.
+
+      - name: place_rank
+        description: >
+          Distance-based rank of the populated place within the earthquake.
+          Rank 1 represents the closest associated place.
+        data_tests:
+          - not_null
