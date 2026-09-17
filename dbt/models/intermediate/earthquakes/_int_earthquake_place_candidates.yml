@@ -18,7 +18,7 @@ models:
       boundary, or area of safety.
 
       The model contains candidate relationships for earthquakes from
-      the most recent 14 days.
+      the most recent 30 days.
 
     columns:
 
