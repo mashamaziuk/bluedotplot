@@ -25,7 +25,7 @@ MEMBERS_TABLE = (
     f"{DATABASE}.{SCHEMA}.USGS_EARTHQUAKE_SEQUENCE_MEMBERS"
 )
 
-LOOKBACK_HOURS = 2
+LOOKBACK_HOURS = 3
 
 MAX_RETRIES = 5
 REQUEST_TIMEOUT = 60
@@ -71,22 +71,25 @@ def get_connection():
 
 
 def get_recent_discovery_events(session):
-    end_time = datetime.now(timezone.utc)
+    updated_after = (
+        datetime.now(timezone.utc)
+        - timedelta(hours=LOOKBACK_HOURS)
+    )
 
-    start_time = end_time - timedelta(
-        hours=LOOKBACK_HOURS
+    updated_after_string = updated_after.strftime(
+        "%Y-%m-%dT%H:%M:%S"
+    )
+
+    print(
+        "Looking for sequence products updated after: "
+        f"{updated_after_string}"
     )
 
     data = request_json(
         session,
         {
             "format": "geojson",
-            "starttime": start_time.strftime(
-                "%Y-%m-%dT%H:%M:%S"
-            ),
-            "endtime": end_time.strftime(
-                "%Y-%m-%dT%H:%M:%S"
-            ),
+            "updatedafter": updated_after_string,
             "producttype": "event-sequence",
             "limit": 20000,
             "orderby": "time-asc",
@@ -297,7 +300,8 @@ def main():
         )
 
         print(
-            "Recent events with event-sequence product: "
+            "Recently updated events with "
+            "event-sequence product: "
             f"{len(discovery_events)}"
         )
 
