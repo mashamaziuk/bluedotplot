@@ -1,0 +1,35 @@
+version: 2
+
+models:
+
+  - name: stg_usgs_earthquake_sequence_members
+    description: >
+      Staging model containing earthquake sequence membership relationships
+      from the USGS Sequence Product. One row represents one earthquake event
+      belonging to one USGS earthquake sequence.
+
+    columns:
+
+      - name: sequence_id
+        description: >
+          Unique identifier assigned to the earthquake sequence by the USGS.
+        data_tests:
+          - not_null
+
+      - name: event_id
+        description: >
+          USGS identifier of an earthquake event belonging to the sequence.
+        data_tests:
+          - not_null
+
+      - name: loaded_at_utc
+        description: >
+          Timestamp in UTC indicating when the sequence membership record
+          was loaded into the Blue Dot Plot raw layer.
+        data_tests:
+          - not_null
+
+    tests:
+
+      - unique:
+          column_name: "concat(sequence_id, '-', event_id)"

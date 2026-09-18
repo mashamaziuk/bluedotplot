@@ -1,0 +1,79 @@
+version: 2
+
+models:
+
+  - name: stg_usgs_earthquake_sequences
+    description: >
+      Staging model containing normalized earthquake sequence data from the
+      USGS Sequence Product. One row represents one USGS earthquake sequence.
+
+    columns:
+
+      - name: sequence_id
+        description: >
+          Unique identifier assigned to the earthquake sequence by the USGS.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: mainshock_event_id
+        description: >
+          USGS event identifier of the mainshock associated with the
+          earthquake sequence.
+        data_tests:
+          - not_null
+
+      - name: sequence_type
+        description: >
+          Sequence type assigned by the USGS Sequence Product.
+
+      - name: center_latitude
+        description: >
+          Latitude of the center of the spatial region defined by the
+          USGS Sequence Product.
+        data_tests:
+          - not_null
+
+      - name: center_longitude
+        description: >
+          Longitude of the center of the spatial region defined by the
+          USGS Sequence Product.
+        data_tests:
+          - not_null
+
+      - name: radius_km
+        description: >
+          Radius of the spatial region defined by the USGS Sequence Product,
+          measured in kilometers.
+        data_tests:
+          - not_null
+
+      - name: start_time_utc
+        description: >
+          Start of the temporal interval defined by the USGS Sequence Product.
+        data_tests:
+          - not_null
+
+      - name: end_time_utc
+        description: >
+          End of the temporal interval defined by the USGS Sequence Product.
+        data_tests:
+          - not_null
+
+      - name: generated_by
+        description: >
+          System or software component identified by USGS as generating
+          the sequence product.
+
+      - name: product_update_time
+        description: >
+          Timestamp when the USGS sequence product was last updated.
+        data_tests:
+          - not_null
+
+      - name: loaded_at_utc
+        description: >
+          Timestamp in UTC indicating when the sequence record was loaded
+          into the Blue Dot Plot raw layer.
+        data_tests:
+          - not_null

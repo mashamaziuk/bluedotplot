@@ -6,8 +6,8 @@ sources:
     schema: raw
 
     description: >
-      Raw earthquake data provided by the United States Geological Survey (USGS)
-      Earthquake Catalog.
+      Raw earthquake and earthquake sequence data provided by the
+      United States Geological Survey (USGS) Earthquake Catalog.
 
     tables:
 
@@ -180,3 +180,83 @@ sources:
             description: >
               Timestamp in UTC indicating when the earthquake record was loaded
               into the Blue Dot Plot raw layer.
+
+
+      - name: usgs_earthquake_sequences
+        description: >
+          Raw earthquake sequence definitions from the USGS Sequence Product.
+          One row represents one USGS earthquake sequence.
+
+        columns:
+
+          - name: sequence_id
+            description: >
+              Unique identifier of the USGS earthquake sequence.
+
+          - name: mainshock_event_id
+            description: >
+              USGS event identifier of the mainshock associated with the
+              earthquake sequence.
+
+          - name: sequence_type
+            description: >
+              Sequence type assigned by the USGS Sequence Product.
+
+          - name: center_latitude
+            description: >
+              Latitude of the center of the spatial region defined by the
+              USGS Sequence Product.
+
+          - name: center_longitude
+            description: >
+              Longitude of the center of the spatial region defined by the
+              USGS Sequence Product.
+
+          - name: radius_km
+            description: >
+              Radius of the spatial region defined by the USGS Sequence Product,
+              measured in kilometers.
+
+          - name: start_time_utc
+            description: >
+              Start of the temporal interval defined by the USGS Sequence Product.
+
+          - name: end_time_utc
+            description: >
+              End of the temporal interval defined by the USGS Sequence Product.
+
+          - name: generated_by
+            description: >
+              System or software component identified by USGS as generating
+              the sequence product.
+
+          - name: product_update_time
+            description: >
+              Timestamp when the USGS sequence product version was updated.
+
+          - name: loaded_at_utc
+            description: >
+              Timestamp in UTC indicating when the sequence record was loaded
+              into the Blue Dot Plot raw layer.
+
+
+      - name: usgs_earthquake_sequence_members
+        description: >
+          Raw membership relationships from the USGS earthquake sequence
+          product. One row represents one earthquake event belonging to one
+          USGS earthquake sequence.
+
+        columns:
+
+          - name: sequence_id
+            description: >
+              Unique identifier of the USGS earthquake sequence.
+
+          - name: event_id
+            description: >
+              USGS identifier of an earthquake event belonging to the sequence.
+
+          - name: loaded_at_utc
+            description: >
+              Timestamp in UTC indicating when the sequence membership record
+              was loaded into the Blue Dot Plot raw layer.
